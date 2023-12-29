@@ -26,42 +26,45 @@ void _showContactDetails(BuildContext context, Contact contact) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Container(
-          padding: EdgeInsets.only(top: 30.0),
-          child: Icon(Icons.person, size: 50.0, color: Colors.blue),
-        ),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 20.0),
-            Text(
-              '${contact.name}',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              '${contact.phoneNumber}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            Text(
-              '${contact.relation}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ],
-        ),
-        contentPadding: EdgeInsets.only(top: 30.0),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: Icon(Icons.close, size: 20.0),
-            ), 
-          ),
-        ],
-      );
+  titlePadding: EdgeInsets.all(0),
+  title: Stack(
+    alignment: Alignment.topRight,
+    children: [
+      Container(
+        padding: EdgeInsets.only(top: 30.0),
+        alignment: Alignment.center,
+        child: Icon(Icons.person, size: 50.0, color: Color.fromARGB(255, 13, 114, 208)),
+      ),
+      IconButton(
+        padding: EdgeInsets.only(top: 10.0, right: 10.0),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        icon: Icon(Icons.close, size: 20.0),
+      ),
+    ],
+  ),
+  content: Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      SizedBox(height: 20.0),
+      Text(
+        '${contact.name}',
+        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+      ),
+      Text(
+        '${contact.phoneNumber}',
+        style: TextStyle(fontSize: 18.0),
+      ),
+      Text(
+        '${contact.relation}',
+        style: TextStyle(fontSize: 18.0),
+      ),
+    ],
+  ),
+  contentPadding: EdgeInsets.only(top: 30.0, left: 24.0, right: 24.0, bottom: 24.0),
+);
     },
   );
 }
