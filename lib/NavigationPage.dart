@@ -37,20 +37,20 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
           child: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Text("연락처"),
+                icon: Icon(Icons.people),
                 label: "연락처",
               ),
               BottomNavigationBarItem(
-                icon: Text("갤러리"),
+                icon: Icon(Icons.image),
                 label: "갤러리",
               ),
               BottomNavigationBarItem(
-                icon: Text("캘린더"),
+                icon: Icon(Icons.calendar_month),
                 label: "캘린더",
               ),
             ],
             currentIndex: _selectedIndex,
-            selectedItemColor: const Color(0xffFF5C39),
+            selectedItemColor: Color.fromARGB(255, 13, 114, 208),
             unselectedItemColor: const Color(0xff757575),
             onTap: _onItemTapped,
             selectedLabelStyle: TextStyle(fontFamily: "SUITE"),
