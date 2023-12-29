@@ -3,14 +3,15 @@ import 'package:table_calendar/table_calendar.dart';
 
 class Event {
   final String title;
-  final String description;
-  final DateTime date;
+  final String time; // 약속 시간 추가
+  final String who; // 만날 사람 추가
 
-  Event(this.title, this.description, this.date);
+  Event(this.title, this.time, this.who);
 
   @override
-  String toString() => '$title - $description on ${date.toLocal()}';
+  String toString() => title;
 }
+
 class ViewCalendarPageWidget extends StatefulWidget {
   const ViewCalendarPageWidget({Key? key}) : super(key: key);
 
@@ -51,24 +52,34 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
     _selectedEvents?.value = _getEventsForDay(selectedDay);
   }
 
-  void _addEvent(String title, String description, String dateString) {
-  DateTime? eventDate = DateTime.tryParse(dateString);
-  if (eventDate == null || title.isEmpty || description.isEmpty) {
-    // 날짜 파싱 실패 혹은 제목/설명이 비어있으면 이벤트를 추가하지 않음.
-    return;
+ void _addEvent(String title, String time, String who) {
+  final event = Event(title, time, who);
+
+  if (_selectedDay != null) {
+    _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
+    _selectedEvents?.value = _getEventsForDay(_selectedDay!);
   }
-
-  final event = Event(title, description, eventDate);
-
-  setState(() {
-    _events[eventDate] = (_events[eventDate] ?? [])..add(event);
-    if (_selectedDay != null && isSameDay(_selectedDay!, eventDate)) {
-      _selectedEvents?.value = _getEventsForDay(_selectedDay!);
-    }
-  });
 }
 
-  void _deleteEvent(DateTime day, Event event) {
+void _addWho(String title, String who) {
+  final event = Event(title, "", who);
+
+  if (_selectedDay != null) {
+    _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
+    _selectedEvents?.value = _getEventsForDay(_selectedDay!);
+  }
+}
+
+void _addTime(String title, String time) {
+  final event = Event(title, time, "");
+
+  if (_selectedDay != null) {
+    _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
+    _selectedEvents?.value = _getEventsForDay(_selectedDay!);
+  }
+}
+
+void _deleteEvent(DateTime day, Event event) {
     setState(() {
       _events[day]?.remove(event);
       if (_events[day]?.isEmpty ?? true) {
@@ -82,7 +93,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TableCalendar - Events'),
+        title: Text('캘린더'),
       ),
       body: Column(
         children: [
@@ -102,23 +113,36 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                 return ListView.builder(
                   itemCount: value.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        title: Text('${value[index]}'),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => _deleteEvent(_selectedDay!, value[index]),
+                    if (value[index] != null) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 4.0,
                         ),
-                      ),
-                    );
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        // 저장된 약속 시간과 만날 사람을 캘린더 하단에 보여줌
+                      child: ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('이벤트: ${value[index]?.title ?? "N/A"}'),
+                              Text('약속 시간: ${value[index]?.time ?? "N/A"}'),
+                              Text('만날 사람: ${value[index]?.who ?? "N/A"}'),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () => _deleteEvent(_selectedDay!, value[index]),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                    
                   },
                 );
               },
@@ -126,52 +150,57 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-  onPressed: () {
-    String title = '';
-    String description = '';
-    String date = '';
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Add Event"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min, // 컨텐츠 크기에 맞게 Column 크기 조정
-          children: [
-            TextField(
-              decoration: InputDecoration(hintText: "Title"),
-              onChanged: (value) => title = value,
+      floatingActionButton: SizedBox(
+        width: 30.0, // 원하는 너비
+        height: 30.0, // 원하는 높이
+        child: FloatingActionButton(
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("일정 추가"),
+                ],
+              ),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(labelText: "일정 이름"),
+                    onSubmitted: (value) {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      _addEvent(value, "", ""); // _addEvent 함수에 이벤트 이름과 시간 전달
+                    },
+                    keyboardType: TextInputType.text,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "약속 시간"),
+                    onSubmitted: (value) {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      _addTime(value, ""); // _addTime 함수에 이벤트 이름과 시간 전달
+                    },
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "만날 사람"),
+                    onSubmitted: (value) {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      _addWho(value, ""); // _addWho 함수에 이벤트 이름과 시간 전달
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("Cancel"),
+                  onPressed: () => Navigator.of(context).pop(), //이벤트 추가 팝업화면
+                ),
+              ],
             ),
-            TextField(
-              decoration: InputDecoration(hintText: "description"),
-              onChanged: (value) => description = value,
-            ),
-            TextField(
-              decoration: InputDecoration(hintText: "Date (e.g., YYYY-MM-DD)"),
-              onChanged: (value) => date = value,
-            ),
-          ],
+          ),
+          child: Icon(Icons.add), //우측 하단 추가 버튼
         ),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Cancel"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: Text("Add"),
-            onPressed: () {
-              // 여기서 입력받은 데이터 처리
-              _addEvent(title, description, date);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
       ),
-    );
-  },
-  child: Icon(Icons.add),
-)
     );
   }
 }
