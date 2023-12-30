@@ -1,91 +1,114 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class ViewGalleryPageWidget extends StatefulWidget {
-  const ViewGalleryPageWidget({Key? key}) : super(key: key);
-
   @override
-  State<ViewGalleryPageWidget> createState() => _ViewGalleryPageWidgetState();
+  _ViewGalleryPageWidgetState createState() => _ViewGalleryPageWidgetState();
 }
 
 class _ViewGalleryPageWidgetState extends State<ViewGalleryPageWidget> {
-  final List<String> images = [
-    'assets/image/image1.jpg',
-    'assets/image/image2.jpg',
-    'assets/image/image3.jpg',
-    'assets/image/image4.jpg',
-    'assets/image/image5.jpg',
-    // ... 추가 이미지 경로
-  ];
-
-  void _showImageDialog(String imagePath) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent, // 배경을 투명하게 설정
-        child: Stack(
-          children: [
-            Center(
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(imagePath),
-                    fit: BoxFit.contain, // 이미지를 화면에 맞게 표시
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 30,
-              right: 20,
-              child: IconButton(
-                icon: Icon(Icons.close),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).pop(); // 닫기 버튼을 누르면 모달 닫기
-                },
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+  File? _image;
+  List<File> imageFiles = [];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('갤러리'),
-        
-      ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              _showImageDialog(images[index]); // 이미지를 누르면 모달 다이얼로그 표시
-            },
-            child: Center(
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                padding: EdgeInsets.all(8.0), // 원하는 여백 설정
-                child: Image.asset(
-                  images[index],
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
+  void initState() {
+    super.initState();
+    _loadImages();
   }
+
+  Future<void> _loadImages() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    setState(() {
+      imageFiles = Directory(path)
+          .listSync()  // 동기적으로 디렉토리 읽기
+          .map((item) => File(item.path))
+          .where((item) => item.path.endsWith('.png') || item.path.endsWith('.jpg'))
+          .toList();
+    });
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final File imageFile = File(pickedFile.path);
+      
+      // 저장할 경로 찾기
+      final directory = await getApplicationDocumentsDirectory();
+      final path = directory.path;
+      final fileName = basename(imageFile.path);
+      final File localImage = await imageFile.copy('$path/$fileName');
+
+      setState(() {
+        _image = localImage;
+        imageFiles.add(localImage);
+      });
+    }
+  }
+
+  @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('갤러리'),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _image == null ? Text('이미지를 선택해 주세요') : Image.file(_image!),
+          ElevatedButton(
+            onPressed: _pickImage,
+            child: Text('갤러리에서 이미지 선택'),
+          ),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.0,
+              ),
+              itemCount: imageFiles.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Image.file(
+                        imageFiles[index],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Image.file(imageFiles[index]),
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.close),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 }
