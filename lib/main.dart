@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madcamp_1week/NavigationPage.dart';
+import 'package:madcamp_1week/pages/gallery/ViewGalleryPage.dart';
 
 void main() {
   runApp(const MyApp());
