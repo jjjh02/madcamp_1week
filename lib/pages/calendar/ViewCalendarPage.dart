@@ -52,34 +52,16 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
     _selectedEvents?.value = _getEventsForDay(selectedDay);
   }
 
- void _addEvent(String title, String time, String who) {
-  final event = Event(title, time, who);
+  void _addOrUpdateEvent(String title, String time, String who) {
+    final event = Event(title, time, who);
 
-  if (_selectedDay != null) {
-    _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
-    _selectedEvents?.value = _getEventsForDay(_selectedDay!);
+    if (_selectedDay != null) {
+      _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
+      _selectedEvents?.value = _getEventsForDay(_selectedDay!);
+    }
   }
-}
 
-void _addWho(String title, String who) {
-  final event = Event(title, "", who);
-
-  if (_selectedDay != null) {
-    _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
-    _selectedEvents?.value = _getEventsForDay(_selectedDay!);
-  }
-}
-
-void _addTime(String title, String time) {
-  final event = Event(title, time, "");
-
-  if (_selectedDay != null) {
-    _events[_selectedDay!] = (_events[_selectedDay] ?? [])..add(event);
-    _selectedEvents?.value = _getEventsForDay(_selectedDay!);
-  }
-}
-
-void _deleteEvent(DateTime day, Event event) {
+  void _deleteEvent(DateTime day, Event event) {
     setState(() {
       _events[day]?.remove(event);
       if (_events[day]?.isEmpty ?? true) {
@@ -113,36 +95,35 @@ void _deleteEvent(DateTime day, Event event) {
                 return ListView.builder(
                   itemCount: value.length,
                   itemBuilder: (context, index) {
-                    if (value[index] != null) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        // 저장된 약속 시간과 만날 사람을 캘린더 하단에 보여줌
+                    final event = value[index];
+
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 4.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      // 저장된 약속 시간과 만날 사람을 캘린더 하단에 보여줌
                       child: ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('이벤트: ${value[index]?.title ?? "N/A"}'),
-                              Text('약속 시간: ${value[index]?.time ?? "N/A"}'),
-                              Text('만날 사람: ${value[index]?.who ?? "N/A"}'),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () => _deleteEvent(_selectedDay!, value[index]),
-                          ),
+                        title: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('일정: ${event?.title ?? "N/A"}'),
+                            SizedBox(width: 60),
+                            Text('시간: ${event?.time ?? "N/A"}'),
+                            SizedBox(width: 60),
+                            Text('사람: ${event?.who ?? "N/A"}'),
+                          ],
                         ),
-                      );
-                    } else {
-                      return Container();
-                    }
-                    
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _deleteEvent(_selectedDay!, event),
+                        ),
+                      ),
+                    );
                   },
                 );
               },
@@ -164,29 +145,34 @@ void _deleteEvent(DateTime day, Event event) {
                 ],
               ),
               content: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
                     decoration: InputDecoration(labelText: "일정 이름"),
                     onSubmitted: (value) {
                       Navigator.of(context).pop(); // 다이얼로그 닫기
-                      _addEvent(value, "", ""); // _addEvent 함수에 이벤트 이름과 시간 전달
+                      _addOrUpdateEvent(value, "", ""); // _addOrUpdateEvent 함수에 이벤트 이름과 시간 전달
                     },
                     keyboardType: TextInputType.text,
+                    textAlign: TextAlign.center,
                   ),
+
                   TextField(
                     decoration: InputDecoration(labelText: "약속 시간"),
                     onSubmitted: (value) {
                       Navigator.of(context).pop(); // 다이얼로그 닫기
-                      _addTime(value, ""); // _addTime 함수에 이벤트 이름과 시간 전달
+                      _addOrUpdateEvent("", value, ""); // _addOrUpdateEvent 함수에 시간 전달
                     },
+                    textAlign: TextAlign.center,
                   ),
+
                   TextField(
                     decoration: InputDecoration(labelText: "만날 사람"),
                     onSubmitted: (value) {
                       Navigator.of(context).pop(); // 다이얼로그 닫기
-                      _addWho(value, ""); // _addWho 함수에 이벤트 이름과 시간 전달
+                      _addOrUpdateEvent("", "", value); // _addOrUpdateEvent 함수에 만날 사람 전달
                     },
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
