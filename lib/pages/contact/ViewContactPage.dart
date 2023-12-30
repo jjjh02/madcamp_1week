@@ -2,24 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:madcamp_1week/pages/contact/ContactModel.dart';
 
 class ViewContactPageWidget extends StatefulWidget {
-  const ViewContactPageWidget({Key? key}) : super(key: key);
+  final String peopleName;
+
+  ViewContactPageWidget({Key? key, this.peopleName = ''}) : super(key: key);
+
 
   @override
   State<ViewContactPageWidget> createState() => _ViewContactPageWidgetState();
 }
 
 class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
-  final List<Contact> contacts = [
-    Contact(name: 'Alpha', phoneNumber: '010-1111-1111', relation: 'family'),
-    Contact(name: 'Bravo', phoneNumber: '010-2222-2222', relation: 'friend'),
-    Contact(name: 'Charlie', phoneNumber: '010-3333-3333', relation: 'relative'),
-    Contact(name: 'Delta', phoneNumber: '010-4444-4444', relation: 'family'),
-    Contact(name: 'Echo', phoneNumber: '010-5555-5555', relation: 'friend'),
-    Contact(name: 'Foxtrot', phoneNumber: '010-6666-6666', relation: 'friend'),
-    Contact(name: 'Golf', phoneNumber: '010-7777-7777', relation: 'family'),
-    Contact(name: 'Hotel', phoneNumber: '010-8888-8888', relation: 'friend'),
-    Contact(name: 'India', phoneNumber: '010-9999-9999', relation: 'relative'),
-  ];
+
+ @override
+  void initState() {
+    super.initState();
+    if (widget.peopleName.isNotEmpty) {
+      // peopleName에 해당하는 연락처 찾기 (null 허용)
+      final Contact? contact = contacts.firstWhere(
+        (contact) => contact.name == widget.peopleName,
+        orElse: () {
+    // 기본 Contact 객체 반환 또는 다른 처리
+    return Contact(name: 'Unknown', phoneNumber: '', relation: '');
+  }, // null 반환
+      );
+      if (contact != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _showContactDetails(context, contact));
+      }
+    }
+  }
+
 
 void _showContactDetails(BuildContext context, Contact contact) {
   showDialog(
