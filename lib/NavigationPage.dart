@@ -26,7 +26,8 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
   Widget build(BuildContext context) {
     final List<Widget> _widgetOptions = <Widget>[
       ViewContactPageWidget(),
-      ViewGalleryPageWidget(),
+      MyImagePicker(),
+      //ViewGalleryPageWidget(),
       ViewCalendarPageWidget(),
     ];
     return Scaffold(
