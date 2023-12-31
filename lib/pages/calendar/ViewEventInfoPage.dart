@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:madcamp_1week/pages/contact/ContactModel.dart';
 
+
 class ViewEventInfoPage extends StatelessWidget {
   final String title;
   final String time;
@@ -36,7 +37,7 @@ class ViewEventInfoPage extends StatelessWidget {
   }
 
   void showContactDetails(BuildContext context, String name) {
-    Contact? contact = getContactByName(name);
+    ContactPeople? contact = getContactByName(name);
     if (contact != null) {
       showDialog(
         context: context,
@@ -66,7 +67,7 @@ class ViewEventInfoPage extends StatelessWidget {
   }
 }
 
-Contact? getContactByName(String name) {
+ContactPeople? getContactByName(String name) {
   return contacts.firstWhere(
     (contact) => contact.name.toLowerCase() == name.toLowerCase(),
     //orElse: () => null,

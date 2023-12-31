@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
+
 class Event {
   final String title;
   final String time;
@@ -174,7 +175,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
   
   List<String> contactNames = contacts.map((contact) => contact.name).toList();
   
-    String? _selectedValue ;
+  String? _selectedValue ;
 
 
   @override
@@ -192,6 +193,16 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             onDaySelected: _onDaySelected,
             eventLoader: _getEventsForDay,
+            calendarStyle: CalendarStyle(
+    selectedDecoration: BoxDecoration(
+      color: Color.fromARGB(255, 54, 118, 177), // 선택된 날짜의 배경색
+      shape: BoxShape.circle, // 선택된 날짜의 모양 (사각형)
+     // 선택된 날짜의 둥근 모서리
+    ),
+    selectedTextStyle: TextStyle(
+      color: Colors.white, // 선택된 날짜의 텍스트 색상
+    ),
+  ),
           ),
           const SizedBox(height: 8.0),
           Expanded(
