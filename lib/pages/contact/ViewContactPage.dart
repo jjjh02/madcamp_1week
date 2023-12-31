@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:madcamp_1week/pages/contact/ContactModel.dart';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 class ViewContactPageWidget extends StatefulWidget {
   final String peopleName;
@@ -18,11 +21,11 @@ class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
     super.initState();
     if (widget.peopleName.isNotEmpty) {
       // peopleName에 해당하는 연락처 찾기 (null 허용)
-      final Contact? contact = contacts.firstWhere(
+      final ContactPeople? contact = contacts.firstWhere(
         (contact) => contact.name == widget.peopleName,
         orElse: () {
     // 기본 Contact 객체 반환 또는 다른 처리
-    return Contact(name: 'Unknown', phoneNumber: '', relation: '');
+    return ContactPeople(name: 'Unknown', phoneNumber: '', relation: '');
   }, // null 반환
       );
       if (contact != null) {
@@ -32,7 +35,7 @@ class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
   }
 
 
-void _showContactDetails(BuildContext context, Contact contact) {
+void _showContactDetails(BuildContext context, ContactPeople contact) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -84,7 +87,7 @@ void _showContactDetails(BuildContext context, Contact contact) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('연락처'),
+        title: Text('연락처', style: TextStyle(fontSize: 20, color: Color.fromARGB(255, 38, 39, 41), fontWeight: FontWeight.bold),),
       ),
       body: ListView.builder(
         itemCount: contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정
