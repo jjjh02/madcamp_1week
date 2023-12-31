@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MyImagePicker extends StatefulWidget {
   @override
@@ -9,6 +12,40 @@ class MyImagePicker extends StatefulWidget {
 
 class _MyImagePickerState extends State<MyImagePicker> {
   List<Map<String, dynamic>> _imagesWithInfo = [];
+
+  // 파일 경로 생성 함수
+  Future<File> _getFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return File('${directory.path}/images_info.json');
+  }
+
+  // 이미지 정보를 파일에 저장
+  Future<void> _saveImagesInfo() async {
+    final file = await _getFile();
+    String jsonContent = jsonEncode(_imagesWithInfo);
+    await file.writeAsString(jsonContent);
+  }
+
+  // 파일에서 이미지 정보를 로드
+  Future<void> _loadImagesInfo() async {
+    try {
+      final file = await _getFile();
+      String jsonContent = await file.readAsString();
+      List<dynamic> decodedList = jsonDecode(jsonContent);
+
+      setState(() {
+        _imagesWithInfo = List<Map<String, dynamic>>.from(decodedList);
+      });
+    } catch (e) {
+      // 파일이 존재하지 않거나 읽을 수 없는 경우 무시
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImagesInfo();
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -24,6 +61,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
         setState(() {
           _imagesWithInfo.add(imageInfo);
         });
+        _saveImagesInfo(); // 이미지 정보를 저장
       }
     }
   }
@@ -59,7 +97,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop({
-                  'image': imageFile,
+                  'image': imageFile.path, // 파일 경로 저장
                   'text': textController.text,
                 });
               },
@@ -88,7 +126,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
                 child: Container(
                   width: double.maxFinite,
                   child: Image.file(
-                    imageInfo['image'],
+                    File(imageInfo['image']), // 파일 경로에서 이미지 로드
                     height: 250, // 이미지 높이 조절
                     width: double.maxFinite,
                     fit: BoxFit.cover,
@@ -117,10 +155,11 @@ class _MyImagePickerState extends State<MyImagePicker> {
     );
   }
 
-  void _deleteImage(File imageFile) {
+  void _deleteImage(String imagePath) {
     setState(() {
-      _imagesWithInfo.removeWhere((element) => element['image'] == imageFile);
+      _imagesWithInfo.removeWhere((element) => element['image'] == imagePath);
     });
+    _saveImagesInfo(); // 이미지 정보를 저장
   }
 
   @override
@@ -139,7 +178,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () => _showImageDialog(_imagesWithInfo[index]),
-            child: Image.file(_imagesWithInfo[index]['image'], fit: BoxFit.cover),
+            child: Image.file(File(_imagesWithInfo[index]['image']), fit: BoxFit.cover),
           );
         },
       ),
