@@ -114,19 +114,48 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
         ],
       ),
       actions: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              _deleteContact(contact);
-              Navigator.of(context).pop();
-            },
-            child: Text('삭제'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 120,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _deleteContact(contact);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('삭제'),
+                  style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                          backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                          //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
+                          shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                ),
+              ),
+              SizedBox(width: 20,),
+              SizedBox(
+                width: 120,
+                child: ElevatedButton(
+                            onPressed: () {
+                Navigator.of(context).pop();
+                            },
+                            child: Text('닫기'),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('닫기'),
-          ),
+          
         ],      
       contentPadding: EdgeInsets.only(top: 30.0, left: 24.0, right: 24.0, bottom: 24.0),
     );
@@ -170,10 +199,11 @@ void _deleteContact(ContactPeople contact) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('연락처', style: TextStyle(fontSize: 20, color: Color.fromARGB(255, 38, 39, 41), fontWeight: FontWeight.bold),),
+        backgroundColor: Colors.white,
+        title: Text('친구 정보'),
       ),
       body: ListView.builder(
-        itemCount: contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정
+        itemCount: contacts.length == 0 ? contacts.length : contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정
         itemBuilder: (context, index) {
           if (index.isOdd) {
             // 홀수 인덱스에 Divider 추가
@@ -214,47 +244,88 @@ void _deleteContact(ContactPeople contact) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("전화번호 추가"),
-            content: Column(
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: "이름"),
-                ),
-                TextField(
-                  controller: phoneNumberController,
-                  decoration: InputDecoration(labelText: "전화번호"),
-                ),
-                TextField(
-                  controller: relationController,
-                  decoration: InputDecoration(labelText: "관계"),
-                ),
-                ]),
+            //title: Text("전화번호 추가"),
+            content: Container(
+              height:210,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(labelText: "이름"),
+                  ),
+                  TextField(
+                    controller: phoneNumberController,
+                    decoration: InputDecoration(labelText: "전화번호"),
+                  ),
+                  TextField(
+                    controller: relationController,
+                    decoration: InputDecoration(labelText: "관계"),
+                  ),
+                  ]),
+            ),
             actions: <Widget>[
-              TextButton(
-                child: Text("추가"),
-                onPressed: () {
-                  if (nameController.text.isNotEmpty &&
-                      phoneNumberController.text.isNotEmpty &&
-                      relationController.text.isNotEmpty) {
-                    _addOrUpdateContact(
-                      nameController.text,
-                      phoneNumberController.text,
-                      relationController.text,
-                    );
-                    Navigator.of(context).pop();
-                  }
-                },
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    child: TextButton(
+                      child: Text("추가"),
+                      onPressed: () {
+                        if (nameController.text.isNotEmpty &&
+                            phoneNumberController.text.isNotEmpty &&
+                            relationController.text.isNotEmpty) {
+                          _addOrUpdateContact(
+                            nameController.text,
+                            phoneNumberController.text,
+                            relationController.text,
+                          );
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                                //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
+                                shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                    ),
+                  ),
+                  SizedBox(width: 20,),
+              SizedBox(
+                width: 120,
+                child: TextButton(
+                  child: Text("취소"),
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
+                                    foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                    shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                    ),
+                                  ),
+                ),
               ),
-              TextButton(
-                child: Text("취소"),
-                onPressed: () => Navigator.of(context).pop(),
+                ],
               ),
+              
             ],
           ),
         );
       },
-      child: Icon(Icons.add),
+      child: Icon(
+              Icons.add,
+              color: Color.fromRGBO(117, 117, 117, 1),
+              size: 32,
+            ),
+            backgroundColor:  Color.fromRGBO(255, 255, 255, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
     ),
     );
   }

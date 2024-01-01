@@ -191,5 +191,6 @@ ContactPeople? getContactByName(String name) {
   return contacts.firstWhere(
     (contact) => contact.name.toLowerCase() == name.toLowerCase(),
     //orElse: () => null,
+   
   );
 }

@@ -192,7 +192,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('캘린더'),
+        title: Text('일정'),
       ),
       body: Column(
         children: [
