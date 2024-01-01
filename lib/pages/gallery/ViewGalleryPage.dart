@@ -237,7 +237,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("사진 저장소"),
+        title: Text("만남 저장소"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

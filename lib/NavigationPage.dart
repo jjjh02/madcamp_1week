@@ -39,15 +39,15 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: "연락처",
+                label: "인연",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.image),
-                label: "갤러리",
+                label: "장면",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                label: "캘린더",
+                label: "만남",
               ),
             ],
             currentIndex: _selectedIndex,

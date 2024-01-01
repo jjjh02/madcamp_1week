@@ -200,7 +200,7 @@ void _deleteContact(ContactPeople contact) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('친구 정보'),
+        title: Text('인연 저장소'),
       ),
       body: ListView.builder(
         itemCount: contacts.length == 0 ? contacts.length : contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정
