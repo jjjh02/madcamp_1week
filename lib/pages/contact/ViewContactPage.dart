@@ -3,6 +3,7 @@ import 'package:madcamp_1week/pages/contact/ContactModel.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ViewContactPageWidget extends StatefulWidget {
   final String peopleName;
@@ -15,6 +16,24 @@ class ViewContactPageWidget extends StatefulWidget {
 }
 
 class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
+
+  void _makePhoneCall(String phoneNumber) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      throw '전화를 걸 수 없습니다.';
+    }
+  }
+
+  void _sendSMS(String phoneNumber) async {
+    final Uri smsUri = Uri(scheme: 'sms', path: phoneNumber);
+    if (await canLaunchUrl(smsUri)) {
+      await launchUrl(smsUri);
+    } else {
+      throw '문자를 보낼 수 없습니다.';
+    }
+  }
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -232,6 +251,19 @@ void _deleteContact(ContactPeople contact) {
                     ),
                   ],
                 ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.local_phone_rounded, color: Color.fromARGB(255, 115, 115, 116)),
+                    onPressed: () => _makePhoneCall(contacts[contactIndex].phoneNumber),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.message_rounded, color: Color.fromARGB(255, 113, 114, 115)),
+                    onPressed: () => _sendSMS(contacts[contactIndex].phoneNumber),
+                  ),
+                ],
               ),
               onTap: () => _showContactDetails(context, contacts[contactIndex]),
             );

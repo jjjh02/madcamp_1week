@@ -37,6 +37,7 @@ dependencies:
   contacts_service: ^0.6.3
   permission_handler: ^11.1.0
   intl: ^0.18.1
+  url_launcher: ^6.2.2
 
 
   # The following adds the Cupertino Icons font to your application.
