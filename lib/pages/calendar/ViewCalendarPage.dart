@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
-
+// Event class 정의
 class Event {
   final String title;
   final String time;
@@ -16,6 +16,7 @@ class Event {
   Event(this.title, this.time, this.who);
 
   // Convert an Event object to a Map object
+  // Event object를 Map object로 변환 (Map: '키:값' 쌍의 목록을 가지는 형태)
   Map<String, dynamic> toJson() => {
         'title': title,
         'time': time,
@@ -23,6 +24,7 @@ class Event {
       };
 
   // Create an Event object from a Map object
+  // Map object를 Event object로 변환
   factory Event.fromJson(Map<String, dynamic> jsonData) {
     return Event(
       jsonData['title'],
@@ -33,6 +35,7 @@ class Event {
 }
 
 // CustomDropdownButton 위젯 정의
+// _selectedContact를 위한 드롭다운
 class CustomDropdownButton extends StatefulWidget {
   final List<String> contactNames;
   final Function(String?) onSelected;
@@ -49,7 +52,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
   @override
   void initState() {
     super.initState();
-    // 초기값 설정 (필요한 경우)
+    // 초기값 설정
     _selectedValue = widget.contactNames.isNotEmpty ? widget.contactNames[0] : null;
   }
 
@@ -73,6 +76,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
   }
 }
 
+// Calendar 정의
 class ViewCalendarPageWidget extends StatefulWidget {
   const ViewCalendarPageWidget({Key? key}) : super(key: key);
 
@@ -115,7 +119,11 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
       String jsonEvents = await file.readAsString();
       Map<String, dynamic> decodedJson = jsonDecode(jsonEvents);
       setState(() {
+        // _events: 모든 일정정보를 담는 list
         _events = decodedJson.map((key, value) => MapEntry(DateTime.parse(key), value.map<Event>((e) => Event.fromJson(e)).toList()));
+        // allDates: _event에 있는 모든 날짜를 담는 list
+        //List<DateTime> allDates = _events.keys.toList();
+        //print('allDates: $allDates');
       });
     } catch (e) {
       // If encountering an error, return an empty map
@@ -181,7 +189,9 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('캘린더'),
       ),
       body: Column(
@@ -215,12 +225,13 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                     final event = value[index];
 
                     return Container(
+                      height: 50,
                       margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
+                        horizontal: 10.0,
+                        vertical: 0.0,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(),
+                        //border: Border.all(),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       // 저장된 약속 시간과 만날 사람을 캘린더 하단에 보여줌
@@ -228,15 +239,28 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                         title: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('일정: ${event?.title ?? "N/A"}'),
-                            SizedBox(width: 60),
-                            Text('시간: ${event?.time ?? "N/A"}'),
-                            SizedBox(width: 60),
+                            //SizedBox(width: 10),
+                            Padding(
+    padding: EdgeInsets.only(top: 4), // 상단 여백을 추가하여 원을 아래로 내림
+    child: Container(
+      width: 15, // 원의 지름
+      height: 15, // 원의 지름
+      decoration: BoxDecoration(
+        shape: BoxShape.circle, // 원 모양으로 설정
+        color: Color.fromARGB(255, 54, 118, 177), // 원의 색상 설정
+      ),
+    ),
+  ),
+  SizedBox(width: 20),
+                            Text('${event?.time ?? "N/A"}'),
+                            SizedBox(width: 30),
+                            Text('${event?.title ?? "N/A"}'),
+                            SizedBox(width: 100),
                             // Text('사람: ${event?.who ?? "N/A"}'),
                           ],
                         ),
                         trailing: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: Icon(Icons.remove),
                           onPressed: () => _deleteEvent(_selectedDay!, event),
                         ),
                         onTap: () {
@@ -245,6 +269,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ViewEventInfoPage(
+                      date: _selectedDay,
                       title: event.title,
                       time: event.time,
                       people: event.who,
@@ -268,50 +293,104 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("일정 추가"),
-        content: Column(
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: "일정 이름"),
-            ),
-            TextField(
-              controller: timeController,
-              decoration: InputDecoration(labelText: "약속 시간"),
-            ),
-            CustomDropdownButton(
-          contactNames: contactNames,
-          onSelected: (newValue) {
-            ///////////////////////////////////////////// newValue 처리
-            _selectedContact = newValue;
-            //print('Selected value = $newValue');
-          },
-        ),]),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Cancel"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: Text("Add"),
-            onPressed: () {
-              if (titleController.text.isNotEmpty &&
-                  timeController.text.isNotEmpty &&
-                  _selectedContact != null) {
-                _addOrUpdateEvent(
-                  titleController.text,
-                  timeController.text,
-                  _selectedContact!,
-                );
-                Navigator.of(context).pop();
-              }
+        backgroundColor: Colors.white,
+        // title: Text("일정 추가"),
+        content: Container(
+          height: 180,
+          child: Column(
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: "일정 이름", labelStyle: TextStyle(
+      color: Colors.grey, // 여기에서 원하는 색상을 설정하세요.
+    ),
+    contentPadding: EdgeInsets.only(top: 8.0, bottom: 0.0),focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.black), // 포커스 받았을 때의 색상을 보라색으로 설정
+    ),),
+                
+              ),
+              TextField(
+                controller: timeController,
+                decoration: InputDecoration(labelText: "약속 시간", labelStyle: TextStyle(
+      color: Colors.grey, // 여기에서 원하는 색상을 설정하세요.
+    ),
+    contentPadding: EdgeInsets.only(top: 8.0, bottom: 0.0),focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.black), // 포커스 받았을 때의 색상을 보라색으로 설정
+    ),),
+    
+              ),
+              CustomDropdownButton(
+            contactNames: contactNames,
+            onSelected: (newValue) {
+              ///////////////////////////////////////////// newValue 처리
+              _selectedContact = newValue;
+              //print('Selected value = $newValue');
             },
+          ),]),
+        ),
+        actions: <Widget>[
+          
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 120,
+                child: TextButton(
+                  child: Text("추가"),
+                  onPressed: () {
+                    if (titleController.text.isNotEmpty &&
+                        timeController.text.isNotEmpty &&
+                        _selectedContact != null) {
+                      _addOrUpdateEvent(
+                        titleController.text,
+                        timeController.text,
+                        _selectedContact!,
+                      );
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                          backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                          //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
+                          shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                ),
+              ),
+              SizedBox(width: 20,),
+              SizedBox(
+                width: 120,
+                child: TextButton(
+                            child: Text("취소"),
+                            onPressed: () => Navigator.of(context).pop(),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+            ],
           ),
+          
         ],
       ),
     );
   },
-  child: Icon(Icons.add),
+  child: Icon(
+              Icons.add,
+              color: Color.fromRGBO(117, 117, 117, 1),
+              size: 32,
+            ),
+            backgroundColor:  Color.fromRGBO(255, 255, 255, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
 ),
       
     );
