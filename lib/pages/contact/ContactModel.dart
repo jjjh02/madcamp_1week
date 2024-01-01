@@ -23,6 +23,12 @@ class ContactPeople {
 
   ContactPeople({required this.name, required this.phoneNumber, required this.relation});
 
+  // Convert a ContactPeople object to a Map object
+  Map<String, dynamic> toJson() => {
+    'name' : name,
+    'phoneNumber' : phoneNumber,
+    'relation' : relation,
+  };
 
   factory ContactPeople.fromJson(Map<String, dynamic> json) {
     return ContactPeople(
