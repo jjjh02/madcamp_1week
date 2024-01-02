@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:madcamp_1week/pages/calendar/ViewCalendarPage.dart';
 
 class ViewContactPageWidget extends StatefulWidget {
   final String peopleName;
@@ -88,7 +89,84 @@ class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
       }
     }
   }
+void _showEditDialog(BuildContext context, int index, ContactPeople contact) {
+  TextEditingController nameController = TextEditingController(text: contact.name);
+  TextEditingController phoneNumberController = TextEditingController(text: contact.phoneNumber);
+  TextEditingController relationController = TextEditingController(text: contact.relation);
 
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("연락처 수정"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: "이름"),
+            ),
+            TextField(
+              controller: phoneNumberController,
+              decoration: InputDecoration(labelText: "전화번호"),
+            ),
+            TextField(
+              controller: relationController,
+              decoration: InputDecoration(labelText: "관계"),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text("취소"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text("저장"),
+            onPressed: () {
+              // 수정된 연락처 정보를 생성합니다.
+              ContactPeople updatedContact = ContactPeople(
+                name: nameController.text,
+                phoneNumber: phoneNumberController.text,
+                relation: relationController.text,
+              );
+
+              // 수정된 연락처 정보를 저장합니다.
+              _saveUpdatedContact(index, updatedContact);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _saveUpdatedContact(int index, ContactPeople updatedContact) async {
+  if (index >= 0 && index < contacts.length) {
+    String oldName = contacts[index].name;
+    contacts[index] = updatedContact;
+
+    // 연락처 리스트를 JSON 형식으로 인코딩합니다.
+    String encodedData = jsonEncode(contacts.map((contact) => contact.toJson()).toList());
+
+    // 파일에 저장합니다.
+    final file = await _localFile();
+    await file.writeAsString(encodedData);
+
+
+    
+    // _events.forEach((key, events) {
+    //   for (var event in events) {
+    //     if (event.who == oldName) {
+    //       event.who = updatedContact.name;
+    //     }
+    //   }
+    // });
+
+      setState(() {});
+  }
+}
 
 void _showContactDetails(BuildContext context, ContactPeople contact) {
   showDialog(
@@ -130,6 +208,20 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
             '${contact.relation}',
             style: TextStyle(fontSize: 18.0),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                        icon: Icon(Icons.local_phone_rounded, color: Color.fromARGB(255, 115, 115, 116)),
+                        onPressed: () => _makePhoneCall(contact.phoneNumber),
+                      ),
+                      IconButton(
+                    icon: Icon(Icons.message_rounded, color: Color.fromARGB(255, 113, 114, 115)),
+                    onPressed: () => _sendSMS(contact.phoneNumber),
+                  ),
+            ],
+          ),
+                  
         ],
       ),
       actions: <Widget>[
@@ -161,6 +253,24 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
                             onPressed: () {
                 Navigator.of(context).pop();
                             },
+                            child: Text('취소'),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+              /*
+              SizedBox(
+                width: 120,
+                child: ElevatedButton(
+                            onPressed: () {
+                Navigator.of(context).pop();
+                            },
                             child: Text('닫기'),
                             style: TextButton.styleFrom(
                                   backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
@@ -172,6 +282,7 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
                                 ),
                           ),
               ),
+              */
             ],
           ),
           
@@ -209,6 +320,7 @@ void _deleteContact(ContactPeople contact) {
   _writeContacts();
 }
 
+
   //String? _selectedRelation;
   final nameController = TextEditingController();
   final phoneNumberController = TextEditingController();
@@ -217,11 +329,13 @@ void _deleteContact(ContactPeople contact) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('인연 저장소'),
       ),
-      body: ListView.builder(
+      body: 
+      ListView.builder(
         itemCount: contacts.length == 0 ? contacts.length : contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정
         itemBuilder: (context, index) {
           if (index.isOdd) {
@@ -252,17 +366,47 @@ void _deleteContact(ContactPeople contact) {
                   ],
                 ),
               ),
+
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.local_phone_rounded, color: Color.fromARGB(255, 115, 115, 116)),
-                    onPressed: () => _makePhoneCall(contacts[contactIndex].phoneNumber),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.message_rounded, color: Color.fromARGB(255, 113, 114, 115)),
-                    onPressed: () => _sendSMS(contacts[contactIndex].phoneNumber),
-                  ),
+                  SizedBox(
+                width: 80,
+                child: ElevatedButton(
+                            onPressed: () {
+                              
+                _showEditDialog(context, contactIndex, contacts[contactIndex]);
+                            },
+                            child: Text('수정'),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xffFDF0E2), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+              /*
+              SizedBox(
+                width: 50,
+                child: ElevatedButton(
+                            onPressed: () {
+                _showContactDetails(context, contacts[contactIndex]);
+                            },
+                            child: Text('보기'),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+              */
                 ],
               ),
               onTap: () => _showContactDetails(context, contacts[contactIndex]),
@@ -293,6 +437,7 @@ void _deleteContact(ContactPeople contact) {
                     controller: relationController,
                     decoration: InputDecoration(labelText: "관계"),
                   ),
+                  
                   ]),
             ),
             actions: <Widget>[

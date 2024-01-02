@@ -167,6 +167,9 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
     _selectedEvents?.value = _getEventsForDay(_selectedDay!);
   }
   _writeEvents();
+  setState(() {
+    
+  });
 }
 
   void _deleteEvent(DateTime day, Event event) {

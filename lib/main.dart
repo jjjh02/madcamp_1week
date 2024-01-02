@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madcamp_1week/NavigationPage.dart';
-import 'package:madcamp_1week/pages/gallery/ViewGalleryPage.dart';
+import 'package:madcamp_1week/SplashScreenPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: "Login", home: NavigationPageWidget());
+    return MaterialApp(title: "Login", home: SplashScreenWidget());
     //debugShowCheckedModeBanner: false,
     // initialRoute: "/login",
     // for test : home: SigninEnterNicknamePageWidget(),

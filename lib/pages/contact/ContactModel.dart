@@ -16,9 +16,9 @@ List<Map<String, dynamic>> jsonData = [
 
 // Contact.fromJson이 jsonData를 
 class ContactPeople {
-  final String name;
-  final String phoneNumber;
-  final String relation;
+   String name;
+   String phoneNumber;
+   String relation;
 
 
   ContactPeople({required this.name, required this.phoneNumber, required this.relation});

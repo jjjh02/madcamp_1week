@@ -35,6 +35,7 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
         bottomNavigationBar: Container(
+          
           child: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -51,7 +52,7 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
               ),
             ],
             currentIndex: _selectedIndex,
-            selectedItemColor: Color.fromARGB(255, 13, 114, 208),
+            selectedItemColor: Color(0xff62838C),
             unselectedItemColor: const Color(0xff757575),
             onTap: _onItemTapped,
             selectedLabelStyle: TextStyle(fontFamily: "SUITE"),
