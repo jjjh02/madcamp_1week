@@ -363,11 +363,11 @@ void _deleteContact(ContactPeople contact) {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('인연 저장소'),
+        title: Text('인연 저장소', style: TextStyle(fontSize: 30),),
       ),
       body: 
       ListView.builder(
-        itemCount: contacts.length == 0 ? contacts.length : contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정
+        itemCount: contacts.length == 0 ? contacts.length : contacts.length * 2 - 1, // 선을 넣기 위해 항목 수 조정/////////////////////////////
         itemBuilder: (context, index) {
           if (index.isOdd) {
             // 홀수 인덱스에 Divider 추가
@@ -403,20 +403,13 @@ void _deleteContact(ContactPeople contact) {
                 children: <Widget>[
                   SizedBox(
                 width: 80,
-                child: ElevatedButton(
+                child: IconButton(icon: Icon(Icons.edit_square, color: Color(0xffFFDCB9),),
                             onPressed: () {
                               
                 _showEditDialog(context, contactIndex, contacts[contactIndex]);
                             },
-                            child: Text('수정'),
-                            style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xffFDF0E2), // 취소 버튼의 배경색을 하얗게 설정
-                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
-                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
-                                  ),
-                                ),
+                            
+                            
                           ),
               ),
               /*

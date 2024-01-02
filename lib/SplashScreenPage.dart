@@ -26,8 +26,18 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
     return Scaffold(
       backgroundColor: Color(0xffFEF2E6),
       body: Center(
-        child: Image.asset('assets/image/app_logo.png', width: 200, height: 200,), // 여기에 로고나 이미지를 추가할 수 있습니다.
-      ),
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset('assets/image/app_logo.png', width: 200, height: 200,),  
+      Text("추억저장소", style: TextStyle(
+    fontSize: 30.0, // 텍스트 크기를 20으로 설정
+  ),),
+      // 추가적인 자식 위젯들을 여기에 배치할 수 있습니다.
+    ],
+  ),
+)
     );
   }
 }
+

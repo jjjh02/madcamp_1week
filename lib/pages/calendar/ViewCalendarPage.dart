@@ -55,8 +55,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
   void initState() {
     super.initState();
     // 초기값 설정
-    _selectedValue =
-        widget.contactNames.isNotEmpty ? widget.contactNames[0] : null;
+    _selectedValue = null;
   }
 
   @override
@@ -195,7 +194,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('장면 저장소'),
+        title: Text('장면 저장소', style: TextStyle(fontSize: 30),),
       ),
       body: Column(
         children: [
@@ -294,6 +293,9 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           //final whoController = TextEditingController();
+          titleController.clear();
+    timeController.clear();
+    _selectedContact = null;
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -349,6 +351,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                       child: TextButton(
                         child: Text("추가"),
                         onPressed: () {
+                           
                           if (titleController.text.isNotEmpty &&
                               timeController.text.isNotEmpty &&
                               _selectedContact != null) {
