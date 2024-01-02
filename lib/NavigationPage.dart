@@ -35,28 +35,30 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
         bottomNavigationBar: Container(
-          
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.people),
-                label: "인연",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.image),
-                label: "장면",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month),
-                label: "만남",
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Color(0xff62838C),
-            unselectedItemColor: const Color(0xff757575),
-            onTap: _onItemTapped,
-            selectedLabelStyle: TextStyle(fontFamily: "SUITE"),
-          ),
-        ));
+  height: 100, // 원하는 높이 값으로 조정
+  child: BottomNavigationBar(
+    items: const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.people),
+        label: "인연",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.image),
+        label: "장면",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.calendar_month),
+        label: "만남",
+      ),
+    ],
+    currentIndex: _selectedIndex,
+    selectedItemColor: Color(0xff62838C),
+    unselectedItemColor: const Color(0xff757575),
+    onTap: _onItemTapped,
+    selectedLabelStyle: TextStyle(fontFamily: "SUITE"),
+  ),
+)
+        
+        );
   }
 }
