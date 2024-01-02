@@ -46,6 +46,35 @@ class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
     return File('$path/contacts.json');
   }
 
+  Future<File> get _eventLocalFile async {
+  final path = await _localPath;
+  return File('$path/events.json');
+}
+
+Future<void> _updateEventsForContactChange(String oldName, String newName) async {
+  // 이벤트 파일 로드
+  final eventFile = await _eventLocalFile; // 이벤트 파일 경로 가져오기
+  String jsonEvents = await eventFile.readAsString();
+  Map<String, dynamic> decodedJson = jsonDecode(jsonEvents);
+
+  // 이벤트 업데이트
+  decodedJson.forEach((key, value) {
+    List<dynamic> updatedEvents = value.map((e) {
+      if (e['who'] == oldName) {
+        e['who'] = newName;
+      }
+      return e;
+    }).toList();
+    decodedJson[key] = updatedEvents;
+  });
+
+  // 변경된 이벤트 저장
+  String updatedJsonEvents = jsonEncode(decodedJson);
+  await eventFile.writeAsString(updatedJsonEvents);
+}
+
+
+
   Future<void> _writeContacts() async {
     final file = await _localFile();
     final encodedData = jsonEncode(contacts);
@@ -63,6 +92,7 @@ class _ViewContactPageWidgetState extends State<ViewContactPageWidget> {
       return [];
     }
   }
+  
 
  @override
   void initState() {
@@ -154,7 +184,8 @@ Future<void> _saveUpdatedContact(int index, ContactPeople updatedContact) async 
     final file = await _localFile();
     await file.writeAsString(encodedData);
 
-
+    await _updateEventsForContactChange(oldName, updatedContact.name);
+    setState(() {});
     
     // _events.forEach((key, events) {
     //   for (var event in events) {
