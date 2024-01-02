@@ -190,7 +190,7 @@ Future<List<Map<String, dynamic>>> loadImagesInfo() async {
 ContactPeople? getContactByName(String name) {
   return contacts.firstWhere(
     (contact) => contact.name.toLowerCase() == name.toLowerCase(),
-    //orElse: () => null,
+    orElse: () => ContactPeople(name: '', phoneNumber: '', relation: ''),
    
   );
 }
