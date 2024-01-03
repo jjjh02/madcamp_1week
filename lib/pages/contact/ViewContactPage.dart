@@ -128,29 +128,72 @@ void _showEditDialog(BuildContext context, int index, ContactPeople contact) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("연락처 수정"),
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        //title: Text("연락처 수정"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
               decoration: InputDecoration(labelText: "이름"),
+              style: TextStyle(fontSize: 18.0),
             ),
             TextField(
               controller: phoneNumberController,
               decoration: InputDecoration(labelText: "전화번호"),
+              style: TextStyle(fontSize: 18.0),
             ),
             TextField(
               controller: relationController,
               decoration: InputDecoration(labelText: "관계"),
+              style: TextStyle(fontSize: 18.0),
             ),
           ],
         ),
         actions: [
-          TextButton(
-            child: Text("취소"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+          SizedBox(
+                width: 120,
+                child: ElevatedButton(
+                            onPressed: () {
+                Navigator.of(context).pop();
+                            },
+                            child: Text('취소'),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+
+              SizedBox(
+                width: 120,
+                child: ElevatedButton(
+                            onPressed: () {
+                ContactPeople updatedContact = ContactPeople(
+                name: nameController.text,
+                phoneNumber: phoneNumberController.text,
+                relation: relationController.text,
+              );
+              _saveUpdatedContact(index, updatedContact);
+              Navigator.of(context).pop();
+                            },
+                            child: Text('저장'),
+                            style: TextButton.styleFrom(
+                                  backgroundColor: Color(0xffFFDCB9), // 취소 버튼의 배경색을 하얗게 설정
+                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
+                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
+                                  ),
+                                ),
+                          ),
+              ),
+              /*
           TextButton(
             child: Text("저장"),
             onPressed: () {
@@ -165,7 +208,7 @@ void _showEditDialog(BuildContext context, int index, ContactPeople contact) {
               _saveUpdatedContact(index, updatedContact);
               Navigator.of(context).pop();
             },
-          ),
+          ),*/
         ],
       );
     },
