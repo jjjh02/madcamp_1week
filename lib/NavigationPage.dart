@@ -35,8 +35,11 @@ class _NavigationPageWidgetState extends State<NavigationPageWidget> {
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
         bottomNavigationBar: Container(
-  height: 100, // 원하는 높이 값으로 조정
+          
+  height: 90, // 원하는 높이 값으로 조정
   child: BottomNavigationBar(
+    backgroundColor: Colors.white,
+    // surfaceTintColor: Colors.transparent, 
     items: const <BottomNavigationBarItem>[
       BottomNavigationBarItem(
         icon: Icon(Icons.people),

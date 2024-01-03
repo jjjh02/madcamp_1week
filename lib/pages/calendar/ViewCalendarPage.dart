@@ -194,7 +194,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('장면 저장소', style: TextStyle(fontSize: 30),),
+        title: Text('만남 저장소', style: TextStyle(fontSize: 30),),
       ),
       body: Column(
         children: [
@@ -207,7 +207,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
             eventLoader: _getEventsForDay,
             calendarStyle: const CalendarStyle(
               selectedDecoration: BoxDecoration(
-                color: Color.fromARGB(255, 54, 118, 177), // 선택된 날짜의 배경색
+                color: Color(0xff62838C), // 선택된 날짜의 배경색
                 shape: BoxShape.circle, // 선택된 날짜의 모양 (사각형)
                 // 선택된 날짜의 둥근 모서리
               ),
@@ -250,8 +250,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                                 height: 15, // 원의 지름
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle, // 원 모양으로 설정
-                                  color: Color.fromARGB(
-                                      255, 54, 118, 177), // 원의 색상 설정
+                                  color: Color(0xff62838C), // 원의 색상 설정
                                 ),
                               ),
                             ),
@@ -300,6 +299,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
             context: context,
             builder: (context) => AlertDialog(
               backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
               // title: Text("일정 추가"),
               content: Container(
                 height: 180,
@@ -364,9 +364,8 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
                           }
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Color.fromARGB(
-                              255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                          foregroundColor: Colors.black,
+                          backgroundColor: Color(0xffFFDCB9), // 추가 버튼의 배경색을 파랑으로 설정
                           //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
                           shape: RoundedRectangleBorder(
                             // 둥근 사각형 모양
@@ -408,7 +407,7 @@ class _ViewCalendarPageWidgetState extends State<ViewCalendarPageWidget> {
           color: Color.fromRGBO(117, 117, 117, 1),
           size: 32,
         ),
-        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

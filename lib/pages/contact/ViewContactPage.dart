@@ -204,6 +204,8 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
       titlePadding: EdgeInsets.all(0),
       title: Stack(
         alignment: Alignment.topRight,
@@ -211,7 +213,7 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
           Container(
             padding: EdgeInsets.only(top: 30.0),
             alignment: Alignment.center,
-            child: Icon(Icons.person, size: 50.0, color: Color.fromARGB(255, 13, 114, 208)),
+            child: Icon(Icons.person, size: 50.0, color: Color(0xff62838C)),
           ),
           /*IconButton(
             padding: EdgeInsets.only(top: 10.0, right: 10.0),
@@ -268,8 +270,8 @@ void _showContactDetails(BuildContext context, ContactPeople contact) {
                   },
                   child: Text('삭제'),
                   style: TextButton.styleFrom(
-                            foregroundColor: Colors.white,
-                          backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                            foregroundColor: Colors.black,
+                          backgroundColor: Color(0xffFFDCB9), // 추가 버튼의 배경색을 파랑으로 설정
                           //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
                           shape: RoundedRectangleBorder( // 둥근 사각형 모양
                             borderRadius: BorderRadius.circular(10.0),
@@ -398,41 +400,17 @@ void _deleteContact(ContactPeople contact) {
                 ),
               ),
 
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                width: 80,
-                child: IconButton(icon: Icon(Icons.edit_square, color: Color(0xffFFDCB9),),
-                            onPressed: () {
-                              
-                _showEditDialog(context, contactIndex, contacts[contactIndex]);
-                            },
-                            
-                            
-                          ),
-              ),
-              /*
-              SizedBox(
-                width: 50,
-                child: ElevatedButton(
-                            onPressed: () {
-                _showContactDetails(context, contacts[contactIndex]);
-                            },
-                            child: Text('보기'),
-                            style: TextButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 취소 버튼의 배경색을 하얗게 설정
-                                  foregroundColor: Colors.black, // 텍스트 색상을 검정으로 설정
-                                  shape: RoundedRectangleBorder( // 둥근 사각형 모양
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(color: const Color.fromARGB(255, 203, 203, 203)), // 회색 테두리
-                                  ),
-                                ),
-                          ),
-              ),
-              */
-                ],
-              ),
+              trailing: SizedBox(
+                              //width: 80,
+                              child: IconButton(icon: Icon(Icons.edit_square, color: Color(0xff62838C),),
+                        onPressed: () {
+                          
+                              _showEditDialog(context, contactIndex, contacts[contactIndex]);
+                        },
+                        
+                        
+                      ),
+                            ),
               onTap: () => _showContactDetails(context, contacts[contactIndex]),
             );
           }
@@ -444,6 +422,8 @@ void _deleteContact(ContactPeople contact) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
+            backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
             //title: Text("전화번호 추가"),
             content: Container(
               height:210,
@@ -486,8 +466,8 @@ void _deleteContact(ContactPeople contact) {
                         }
                       },
                       style: TextButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                                  foregroundColor: Colors.black,
+                                backgroundColor: Color(0xffFFDCB9), // 추가 버튼의 배경색을 파랑으로 설정
                                 //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
                                 shape: RoundedRectangleBorder( // 둥근 사각형 모양
                                   borderRadius: BorderRadius.circular(10.0),
@@ -523,7 +503,7 @@ void _deleteContact(ContactPeople contact) {
               color: Color.fromRGBO(117, 117, 117, 1),
               size: 32,
             ),
-            backgroundColor:  Color.fromRGBO(255, 255, 255, 1),
+            backgroundColor:  Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

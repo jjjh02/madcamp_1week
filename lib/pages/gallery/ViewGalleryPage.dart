@@ -74,10 +74,12 @@ class _MyImagePickerState extends State<MyImagePicker> {
       builder: (BuildContext context) {
         return AlertDialog(
           //title: Text('사진 추가'),
+          backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(15.0), // 여기서 모서리의 둥근 정도를 조절하세요
   ),
-          backgroundColor: Colors.white,
+          
           
           content: SizedBox(
             width: double.maxFinite,
@@ -120,8 +122,8 @@ class _MyImagePickerState extends State<MyImagePicker> {
                     },
                     child: Text('추가'),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                    backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                      foregroundColor: Colors.black,
+                    backgroundColor: Color(0xffFFDCB9), // 추가 버튼의 배경색을 파랑으로 설정
                     //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
                     shape: RoundedRectangleBorder( // 둥근 사각형 모양
                       borderRadius: BorderRadius.circular(10.0),
@@ -160,6 +162,8 @@ class _MyImagePickerState extends State<MyImagePicker> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -191,8 +195,8 @@ class _MyImagePickerState extends State<MyImagePicker> {
                 },
                 child: Text('삭제'),
                 style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                      backgroundColor: Color.fromARGB(255, 13, 114, 208), // 추가 버튼의 배경색을 파랑으로 설정
+                        foregroundColor: Colors.black,
+                      backgroundColor: Color(0xffFFDCB9), // 추가 버튼의 배경색을 파랑으로 설정
                       //textStyle: TextStyle(color: Colors.white),// 텍스트 색상을 흰색으로 설정
                       shape: RoundedRectangleBorder( // 둥근 사각형 모양
                         borderRadius: BorderRadius.circular(10.0),
@@ -237,7 +241,7 @@ class _MyImagePickerState extends State<MyImagePicker> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("만남 저장소", style: TextStyle(fontSize: 30),),
+        title: Text("장면 저장소", style: TextStyle(fontSize: 30),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
